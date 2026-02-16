@@ -1,0 +1,53 @@
+{
+    "students": {
+        "columns": [
+            "id",
+            "name",
+            "age"
+        ],
+        "primary": "id",
+        "indexed": [
+            "age"
+        ]
+    },
+    "product": {
+        "columns": [
+            "id",
+            "name",
+            "age"
+        ],
+        "types": {
+            "id": "int",
+            "name": "str",
+            "age": "int"
+        },
+        "primary": null,
+        "indexed": [
+            "age"
+        ]
+    },
+    "st": {
+        "columns": [
+            "roll_no",
+            "name"
+        ],
+        "types": {
+            "roll_no": "int",
+            "name": "int"
+        },
+        "primary": null,
+        "indexed": []
+    },
+    "name": {
+        "columns": [
+            "PRN",
+            "name"
+        ],
+        "types": {
+            "PRN": "int",
+            "name": "str"
+        },
+        "primary": null,
+        "indexed": []
+    }
+}
