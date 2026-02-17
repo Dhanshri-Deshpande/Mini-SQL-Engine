@@ -49,5 +49,68 @@
         },
         "primary": null,
         "indexed": []
+    },
+    "dahsndhri": {
+        "columns": [
+            "salary"
+        ],
+        "types": {
+            "salary": "int"
+        },
+        "primary": null,
+        "indexed": []
+    },
+    "dh": {
+        "columns": [
+            "name"
+        ],
+        "types": {
+            "name": "int"
+        },
+        "primary": null,
+        "indexed": []
+    },
+    "bh": {
+        "columns": [
+            "namw"
+        ],
+        "types": {
+            "namw": "int"
+        },
+        "primary": null,
+        "indexed": []
+    },
+    "sjba": {
+        "columns": [
+            "name"
+        ],
+        "types": {
+            "name": "str"
+        },
+        "primary": null,
+        "indexed": []
+    },
+    "table": {
+        "columns": [
+            "name"
+        ],
+        "types": {
+            "name": "str"
+        },
+        "primary": null,
+        "indexed": []
+    },
+    "crop_cleaned": {
+        "columns": [
+            "State",
+            "Crop",
+            "Month",
+            "Prices 2023",
+            "Prices 2024",
+            "% Change(Over Previous Year)"
+        ],
+        "types": {},
+        "primary": null,
+        "indexed": []
     }
 }
