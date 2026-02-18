@@ -72,26 +72,27 @@ def execute_query(parsed_query, plan):
         file_path = STORAGE + f"{table}.csv"
 
         if not os.path.exists(file_path):
-            print("Table does not exist")
-            return None
+            return "Error: Table does not exist"
 
-        # 🔥 Read header from CSV
         with open(file_path, "r") as f:
             reader = list(csv.reader(f))
 
         header = reader[0]
+        values = parsed_query["values"]
 
-        # 🔥 Validate constraints BEFORE inserting
-        if not validate_constraints(table, header, parsed_query["values"]):
-            return None
+        # 🔥 Column count check
+        if len(values) != len(header):
+            return f"Error: Expected {len(header)} values, got {len(values)}"
 
-        # 🔥 Now insert if validation passed
+        # 🔥 Validate constraints
+        if not validate_constraints(table, header, values):
+            return "Error: Constraint violation"
+
         with open(file_path, "a", newline="") as f:
             writer = csv.writer(f)
-            writer.writerow(parsed_query["values"])
+            writer.writerow(values)
 
-        print("Inserted Successfully")
-        return None
+        return "Inserted Successfully"
 
 
     if action == "SELECT":

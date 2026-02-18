@@ -8,6 +8,7 @@ function App() {
   const [activeTab, setActiveTab] = useState(null);
   const [terminalLogs, setTerminalLogs] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [contextMenu, setContextMenu] = useState(null);
 
   const terminalRef = useRef(null);
   const queryRef = useRef(null);
@@ -87,6 +88,44 @@ function App() {
       });
   };
 
+  const deleteTable = (table) => {
+  fetch("http://127.0.0.1:5000/delete_table", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ table })
+  })
+    .then(res => res.json())
+    .then(data => {
+      loadTables();
+      setTerminalLogs(prev => [
+        ...prev,
+        { type: "success", message: `✔ ${data.message}` }
+      ]);
+      setContextMenu(null);
+    });
+};
+
+const renameTable = (oldName) => {
+  const newName = prompt("Enter new table name:");
+  if (!newName) return;
+
+  fetch("http://127.0.0.1:5000/rename_table", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ oldName, newName })
+  })
+    .then(res => res.json())
+    .then(data => {
+      loadTables();
+      setTerminalLogs(prev => [
+        ...prev,
+        { type: "success", message: `✔ ${data.message}` }
+      ]);
+      setContextMenu(null);
+    });
+};
+
+
   const refreshActiveTab = () => {
     fetch(`http://127.0.0.1:5000/table/${activeTab}`)
       .then(res => res.json())
@@ -157,13 +196,22 @@ function App() {
         <ul>
           {tables.map((table, index) => (
             <li
-              key={index}
-              className={activeTab === table ? "active-table" : ""}
-              onClick={() => loadTable(table)}
-              onDoubleClick={() => setQuery(`SHOW ${table}`)}
-            >
-              {table}
-            </li>
+  key={index}
+  className={activeTab === table ? "active-table" : ""}
+  onClick={() => loadTable(table)}
+  onDoubleClick={() => setQuery(`SHOW ${table}`)}
+  onContextMenu={(e) => {
+    e.preventDefault();
+    setContextMenu({
+      mouseX: e.clientX,
+      mouseY: e.clientY,
+      table: table
+    });
+  }}
+>
+  {table}
+</li>
+
           ))}
         </ul>
       </div>
@@ -246,6 +294,40 @@ function App() {
         </div>
 
       </div>
+      {contextMenu && (
+  <div
+    className="context-menu"
+    style={{ top: contextMenu.y, left: contextMenu.x }}
+    onMouseLeave={() => setContextMenu(null)}
+  >
+    <div onClick={() => {
+      loadTable(contextMenu.table);
+      setContextMenu(null);
+    }}>
+      📂 Open
+    </div>
+
+    <div onClick={() => {
+      navigator.clipboard.writeText(contextMenu.table);
+      setTerminalLogs(prev => [
+        ...prev,
+        { type: "success", message: `✔ Copied '${contextMenu.table}'` }
+      ]);
+      setContextMenu(null);
+    }}>
+      📋 Copy Name
+    </div>
+
+    <div onClick={() => renameTable(contextMenu.table)}>
+      ✏ Rename
+    </div>
+
+    <div className="danger" onClick={() => deleteTable(contextMenu.table)}>
+      🗑 Delete
+    </div>
+  </div>
+)}
+
     </div>
   );
 }

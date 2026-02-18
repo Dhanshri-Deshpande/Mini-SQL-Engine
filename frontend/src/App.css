@@ -213,3 +213,28 @@ tr:hover {
 .log.error {
   color: #f44336;
 }
+.context-menu {
+  position: absolute;
+  background: #252526;
+  border: 1px solid #333;
+  width: 160px;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  border-radius: 4px;
+}
+
+.context-menu div {
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #d4d4d4;
+}
+
+.context-menu div:hover {
+  background: #37373d;
+}
+
+.context-menu .danger:hover {
+  background: #5a1d1d;
+  color: #ff4d4d;
+}

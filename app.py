@@ -89,7 +89,42 @@ def execute():
 @app.route("/")
 def home():
     return "Mini SQL Backend Running 🚀"
+@app.route("/delete_table", methods=["POST"])
+def delete_table():
+    data = request.json
+    table = data["table"]
 
+    file_path = os.path.join(STORAGE, f"{table}.csv")
+
+    if os.path.exists(file_path):
+        os.remove(file_path)
+        return jsonify({"message": f"Table '{table}' deleted successfully"})
+    else:
+        return jsonify({"message": "Table not found"}), 404
+
+
+@app.route("/rename_table", methods=["POST"])
+def rename_table():
+    data = request.json
+    old = data["oldName"]
+    new = data["newName"]
+
+    old_path = os.path.join(STORAGE, f"{old}.csv")
+    new_path = os.path.join(STORAGE, f"{new}.csv")
+
+    # 🔴 Check if old table exists
+    if not os.path.exists(old_path):
+        return jsonify({"message": "Error: Original table not found"}), 400
+
+    # 🔴 Check if new table name already exists
+    if os.path.exists(new_path):
+        return jsonify({"message": "Error: Table name already exists"}), 400
+
+    try:
+        os.rename(old_path, new_path)
+        return jsonify({"message": f"Table renamed to '{new}' successfully"})
+    except Exception as e:
+        return jsonify({"message": f"Error: {str(e)}"}), 500
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -112,5 +112,15 @@
         "types": {},
         "primary": null,
         "indexed": []
+    },
+    "table1": {
+        "columns": [
+            "name"
+        ],
+        "types": {
+            "name": "str"
+        },
+        "primary": null,
+        "indexed": []
     }
 }
