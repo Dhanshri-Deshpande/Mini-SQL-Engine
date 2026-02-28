@@ -1,0 +1,52 @@
+{
+    "table": {
+        "columns": [
+            "int",
+            "str"
+        ],
+        "types": {
+            "int": "",
+            "str": ""
+        },
+        "primary": null,
+        "indexed": []
+    },
+    "table1": {
+        "columns": [
+            "int",
+            "str",
+            "str"
+        ],
+        "types": {
+            "int": "",
+            "str": ""
+        },
+        "primary": null,
+        "indexed": []
+    },
+    "table12": {
+        "columns": [
+            "int",
+            "str",
+            "str"
+        ],
+        "types": {
+            "int": "",
+            "str": ""
+        },
+        "primary": null,
+        "indexed": []
+    },
+    "crop": {
+        "columns": [
+            "int",
+            "str"
+        ],
+        "types": {
+            "int": "",
+            "str": ""
+        },
+        "primary": null,
+        "indexed": []
+    }
+}

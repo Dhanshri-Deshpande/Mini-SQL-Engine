@@ -1,2 +1,10 @@
+import re
+
 def tokenize(query):
-    return query.strip().replace("(", " ( ").replace(")", " ) ").split()
+    # Add spaces around special characters
+    query = re.sub(r'([(),;])', r' \1 ', query)
+
+    # Remove multiple spaces
+    query = re.sub(r'\s+', ' ', query)
+
+    return query.strip().split()

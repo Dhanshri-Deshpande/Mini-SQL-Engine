@@ -51,7 +51,7 @@ def create_table(table, columns):
     col_names = []
     primary = None
     indexed = []
-    types_dict = {}   # ✅ define once
+    types_dict = {} 
 
     for col in columns:
         parts = col.split()

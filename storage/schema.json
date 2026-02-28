@@ -38,18 +38,6 @@
         "primary": null,
         "indexed": []
     },
-    "name": {
-        "columns": [
-            "PRN",
-            "name"
-        ],
-        "types": {
-            "PRN": "int",
-            "name": "str"
-        },
-        "primary": null,
-        "indexed": []
-    },
     "dahsndhri": {
         "columns": [
             "salary"
@@ -90,16 +78,6 @@
         "primary": null,
         "indexed": []
     },
-    "table": {
-        "columns": [
-            "name"
-        ],
-        "types": {
-            "name": "str"
-        },
-        "primary": null,
-        "indexed": []
-    },
     "crop_cleaned": {
         "columns": [
             "State",
@@ -122,5 +100,213 @@
         },
         "primary": null,
         "indexed": []
+    },
+    "crop1": {
+        "columns": [
+            "int",
+            "str"
+        ],
+        "types": {
+            "int": "price",
+            "str": "name"
+        },
+        "primary": null,
+        "indexed": []
+    },
+    "DATA": {
+        "columns": [
+            "name",
+            "PRN"
+        ],
+        "types": {
+            "name": "str",
+            "PRN": "int"
+        },
+        "primary": null,
+        "indexed": []
+    },
+    "departments": {
+        "columns": [
+            "id"
+        ],
+        "types": {
+            "id": "int"
+        },
+        "primary": "id",
+        "unique": [],
+        "not_null": [],
+        "foreign_keys": {}
+    },
+    "table3": {
+        "columns": [
+            "name"
+        ],
+        "types": {
+            "name": {
+                "type": "int"
+            }
+        },
+        "primary": null,
+        "unique": [],
+        "not_null": [],
+        "foreign_keys": {}
+    },
+    "table7": {
+        "columns": [
+            "name"
+        ],
+        "types": {
+            "name": {
+                "type": "int"
+            }
+        },
+        "primary": "name",
+        "unique": [],
+        "not_null": [],
+        "foreign_keys": {}
+    },
+    "table5": {
+        "columns": [
+            "name",
+            "id"
+        ],
+        "types": {
+            "name": {
+                "type": "varchar",
+                "size": 50
+            },
+            "id": {
+                "type": "int"
+            }
+        },
+        "primary": "name",
+        "unique": [],
+        "not_null": [
+            "id"
+        ],
+        "foreign_keys": {}
+    },
+    "data1": {
+        "columns": [
+            "name",
+            "id"
+        ],
+        "types": {
+            "name": {
+                "type": "varchar",
+                "size": 100
+            },
+            "id": {
+                "type": "int"
+            }
+        },
+        "primary": "name",
+        "unique": [],
+        "not_null": [
+            "id"
+        ],
+        "foreign_keys": {}
+    },
+    "table10": {
+        "columns": [
+            "name",
+            "age"
+        ],
+        "types": {
+            "name": {
+                "type": "varchar",
+                "size": 12
+            },
+            "age": {
+                "type": "int"
+            }
+        },
+        "primary": null,
+        "unique": [],
+        "not_null": [],
+        "foreign_keys": {}
+    },
+    "name1": {
+        "columns": [
+            "PRN",
+            "name"
+        ],
+        "types": {
+            "PRN": "int",
+            "name": "str"
+        },
+        "primary": null,
+        "indexed": []
+    },
+    "club": {
+        "columns": [
+            "club_id",
+            "club_name"
+        ],
+        "types": {
+            "club_id": {
+                "type": "int"
+            },
+            "club_name": {
+                "type": "varchar",
+                "size": 50
+            }
+        },
+        "primary": "club_id",
+        "unique": [],
+        "not_null": [],
+        "foreign_keys": {}
+    },
+    "student": {
+        "columns": [
+            "student_id",
+            "name"
+        ],
+        "types": {
+            "student_id": {
+                "type": "int"
+            },
+            "name": {
+                "type": "varchar",
+                "size": 50
+            }
+        },
+        "primary": "student_id",
+        "unique": [],
+        "not_null": [],
+        "foreign_keys": {}
+    },
+    "TABLE": {
+        "columns": [
+            "club_id",
+            "club_name"
+        ],
+        "types": {
+            "club_id": {
+                "type": "int"
+            },
+            "club_name": {
+                "type": "varchar",
+                "size": 50
+            }
+        },
+        "primary": "club_id",
+        "unique": [],
+        "not_null": [],
+        "foreign_keys": {}
+    },
+    "info": {
+        "columns": [
+            "name"
+        ],
+        "types": {
+            "name": {
+                "type": "int"
+            }
+        },
+        "primary": null,
+        "unique": [],
+        "not_null": [],
+        "foreign_keys": {}
     }
 }

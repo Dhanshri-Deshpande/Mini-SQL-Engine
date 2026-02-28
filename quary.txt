@@ -1,0 +1,32 @@
+MAKE student (id int PRIMARY KEY, name varchar(50));
+
+ADD student VALUES (1, John);
+
+SHOW student;
+
+CHANGE student SET name=Rahul WHERE id=1;
+
+ERASE student WHERE id=1;
+
+ALTER student ADD age int;
+
+TRUNCATE student;
+
+RENAME student TO student_info;
+
+REMOVE student_info;
+
+
+CREATE TABLE club (
+    club_id INT PRIMARY KEY,
+    club_name VARCHAR(50)
+);
+
+
+CREATE TABLE student (
+    student_id INT PRIMARY KEY,
+    name VARCHAR(50),
+    club_id INT,
+    FOREIGN KEY (club_id)
+    REFERENCES club(club_id)
+);

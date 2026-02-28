@@ -22,7 +22,6 @@ def optimize_query(parsed_query):
 
     total_rows = count_rows(table)
 
-    # Check primary or secondary index
     if column == schema[table]["primary"]:
         return {
             "plan": f"INDEX_SCAN on {table}.{column}",

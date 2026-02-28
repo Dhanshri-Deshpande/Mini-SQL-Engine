@@ -13,7 +13,7 @@ if not os.path.exists(STORAGE):
     os.makedirs(STORAGE)
 
 
-# 🔥 Get all tables
+
 @app.route("/tables")
 def get_tables():
     tables = []
@@ -23,12 +23,11 @@ def get_tables():
     return jsonify(tables)
 
 
-# 🔥 Open table
 @app.route("/table/<name>")
 def get_table(name):
     file_path = os.path.join(STORAGE, f"{name}.csv")
 
-    print("🔍 Looking for:", file_path)
+    print("Looking for:", file_path)
 
     if not os.path.exists(file_path):
         return jsonify({"error": "Table not found"}), 404
@@ -53,25 +52,25 @@ def upload_csv():
     save_path = os.path.join(STORAGE, file.filename)
     file.save(save_path)
 
-    # 🔥 Auto-generate schema
+   
     table_name = file.filename.replace(".csv", "")
     load_schema_from_csv(table_name)
 
     return jsonify({"message": "CSV uploaded successfully"})
 
 
-# 🔥 Execute Query
+
 @app.route("/query", methods=["POST"])
 def execute():
     try:
         data = request.json
         query = data.get("query")
 
-        print("🔥 Received Query:", query)
+        print("Received Query:", query)
 
         result = run_query(query)
 
-        # Refresh tables
+    
         tables = []
         for file in os.listdir(STORAGE):
             if file.endswith(".csv"):
@@ -88,7 +87,7 @@ def execute():
 
 @app.route("/")
 def home():
-    return "Mini SQL Backend Running 🚀"
+    return "Mini SQL Backend Running "
 @app.route("/delete_table", methods=["POST"])
 def delete_table():
     data = request.json
@@ -112,11 +111,10 @@ def rename_table():
     old_path = os.path.join(STORAGE, f"{old}.csv")
     new_path = os.path.join(STORAGE, f"{new}.csv")
 
-    # 🔴 Check if old table exists
+  
     if not os.path.exists(old_path):
         return jsonify({"message": "Error: Original table not found"}), 400
 
-    # 🔴 Check if new table name already exists
     if os.path.exists(new_path):
         return jsonify({"message": "Error: Table name already exists"}), 400
 

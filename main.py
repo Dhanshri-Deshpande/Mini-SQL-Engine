@@ -13,7 +13,7 @@ def run_query(query):
 
 def display_banner():
     print("=" * 50)
-    print("        Supports DDL + DML + Optimizer")
+    print("        Supports DDL + DML")
     print("=" * 50)
 
 
