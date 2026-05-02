@@ -56,8 +56,12 @@ def main():
          
             if result:
                 print("Result:")
-                for row in result:
-                    print(row)
+
+                if isinstance(result, list):
+                    for row in result:
+                        print(row)
+                else:
+                    print(result)
 
         except Exception as e:
             print(f"⚠ Error: {e}")

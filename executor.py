@@ -2,13 +2,14 @@ import os
 import json
 import csv
 from storage import create_table
+import re
 
 
 STORAGE = "storage/"
 
 
 
-import re
+
 def validate_constraints(table, header, row_values):
 
     schema_path = STORAGE + "schema.json"
@@ -23,8 +24,10 @@ def validate_constraints(table, header, row_values):
     unique_cols = table_schema.get("unique", [])
     not_null_cols = table_schema.get("not_null", [])
     foreign_keys = table_schema.get("foreign_keys", {})
-
+    check_constraints = table_schema.get("check", {})
     file_path = STORAGE + f"{table}.csv"
+    len_constraints = table_schema.get("len", {})
+    positive_cols = table_schema.get("positive", [])
 
     existing_rows = []
     if os.path.exists(file_path):
@@ -34,19 +37,18 @@ def validate_constraints(table, header, row_values):
 
     for i, col in enumerate(header):
 
-        value = row_values[i]
+        value = row_values[i].strip()
         datatype = types.get(col)
 
-        # -------------------------
-        # 🔹 NOT NULL CHECK
-        # -------------------------
+        if datatype is None:
+            continue
+
+    
         if col in not_null_cols and value.strip() == "":
             print(f"{col} cannot be NULL")
             return False
-
-        # -------------------------
-        # 🔹 DATA TYPE CHECK (ADD HERE)
-        # -------------------------
+        
+       
 
         if datatype["type"] == "int":
             if not value.isdigit():
@@ -61,7 +63,8 @@ def validate_constraints(table, header, row_values):
                 return False
 
         elif datatype["type"] == "boolean":
-            if value.lower() not in ["true", "false"]:
+            value_clean = value.strip().lower()
+            if value_clean not in ["true", "false"]:
                 print(f"{col} must be TRUE or FALSE")
                 return False
 
@@ -76,44 +79,97 @@ def validate_constraints(table, header, row_values):
                 return False
 
         elif datatype["type"] == "date":
-            import re
-            if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", value):
+            value_clean = value.strip()
+            if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", value_clean):
                 print(f"{col} must be YYYY-MM-DD")
                 return False
 
         elif datatype["type"] == "time":
-            import re
-            if not re.fullmatch(r"\d{2}:\d{2}:\d{2}", value):
+            value_clean = value.strip()
+            if not re.fullmatch(r"\d{2}:\d{2}:\d{2}", value_clean):
                 print(f"{col} must be HH:MM:SS")
                 return False
 
         elif datatype["type"] == "datetime":
-            import re
-            if not re.fullmatch(r"\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}", value):
+            value_clean = value.strip()
+            if not re.fullmatch(r"\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}", value_clean):
                 print(f"{col} must be YYYY-MM-DD HH:MM:SS")
+                return False
+                
+        # POSITIVE constraint
+        if col in positive_cols:
+            try:
+                if float(value) <= 0:
+                    print(f"{col} must be positive")
+                    return False
+            except:
+                print(f"{col} must be numeric for POSITIVE constraint")
+                return False
+        # -------------------------
+        # 🔹 LEN CONSTRAINT
+        # -------------------------
+
+        if col in len_constraints:
+
+            expected_len = len_constraints[col]
+
+            if len(value) != expected_len:
+                print(f"LEN constraint failed: {col} must be exactly {expected_len} characters")
                 return False
 
         # -------------------------
-        # 🔹 PRIMARY KEY CHECK
+        # 🔹 CHECK CONSTRAINT
         # -------------------------
+
+        if col in check_constraints:
+
+            rule = check_constraints[col]
+            operator = rule["operator"]
+            check_value = rule["value"]
+
+            try:
+                val = float(value)
+                check_val = float(check_value)
+            except:
+                print(f"Invalid value for CHECK constraint on {col}")
+                return False
+
+            if operator == "<" and not (val < check_val):
+                print(f"CHECK constraint failed: {col} must be < {check_val}")
+                return False
+
+            elif operator == ">" and not (val > check_val):
+                print(f"CHECK constraint failed: {col} must be > {check_val}")
+                return False
+
+            elif operator == "<=" and not (val <= check_val):
+                print(f"CHECK constraint failed: {col} must be <= {check_val}")
+                return False
+
+            elif operator == ">=" and not (val >= check_val):
+                print(f"CHECK constraint failed: {col} must be >= {check_val}")
+                return False
+
+            elif operator == "==" and not (val == check_val):
+                print(f"CHECK constraint failed: {col} must be == {check_val}")
+                return False
+
         if col == primary:
-            for row in existing_rows:
-                if row[i] == value:
+            for existing_row in existing_rows:
+                if existing_row == row_values:
+                    continue
+                if existing_row[i] == value:
                     print("Primary key violation")
                     return False
 
-        # -------------------------
-        # 🔹 UNIQUE CHECK
-        # -------------------------
         if col in unique_cols:
-            for row in existing_rows:
-                if row[i] == value:
+            for existing_row in existing_rows:
+                if existing_row == row_values:
+                    continue
+                if existing_row[i] == value:
                     print(f"Unique constraint failed on {col}")
                     return False
 
-        # -------------------------
-        # 🔹 FOREIGN KEY CHECK
-        # -------------------------
         if col in foreign_keys:
             ref_table = foreign_keys[col]["ref_table"]
             ref_column = foreign_keys[col]["ref_column"]
@@ -140,10 +196,9 @@ def validate_constraints(table, header, row_values):
             if not found:
                 print("Foreign key constraint violation")
                 return False
-
     return True
 
-
+        
 def execute_query(parsed_query, plan):
 
     action = parsed_query["action"]
@@ -161,13 +216,16 @@ def execute_query(parsed_query, plan):
             schema = {}
 
         schema[table] = {
-            "columns": parsed_query["columns"],
-            "types": parsed_query["types"],
-            "primary": parsed_query["primary"],
-            "unique": parsed_query["unique"],
-            "not_null": parsed_query["not_null"],
-            "foreign_keys": parsed_query["foreign_keys"]
-        }
+        "columns": parsed_query["columns"],
+        "types": parsed_query["types"],
+        "primary": parsed_query["primary"],
+        "unique": parsed_query["unique"],
+        "not_null": parsed_query["not_null"],
+        "foreign_keys": parsed_query["foreign_keys"],
+        "check": parsed_query.get("check", {}),
+        "len": parsed_query.get("len", {}),
+        "positive": parsed_query.get("positive", [])  
+    }
 
         with open(schema_path, "w") as f:
             json.dump(schema, f, indent=4)
@@ -179,6 +237,37 @@ def execute_query(parsed_query, plan):
             writer.writerow(parsed_query["columns"])
 
         print(f"Table '{table}' created with constraints.")
+        return None
+
+    if action == "ALTER_MODIFY":
+
+        file_path = STORAGE + f"{table}.csv"
+        schema_path = STORAGE + "schema.json"
+
+        if not os.path.exists(file_path):
+            print("Table not found")
+            return None
+
+        with open(schema_path, "r") as f:
+            schema = json.load(f)
+
+        if table not in schema:
+            print("Schema not found")
+            return None
+
+        column = parsed_query["column"]
+
+        if column not in schema[table]["columns"]:
+            print("Column not found")
+            return None
+
+        # Update datatype in schema
+        schema[table]["types"][column] = parsed_query["type"]
+
+        with open(schema_path, "w") as f:
+            json.dump(schema, f, indent=4)
+
+        print("Column modified successfully")
         return None
     if action == "RENAME":
 
@@ -208,6 +297,7 @@ def execute_query(parsed_query, plan):
 
         print("Table renamed successfully")
         return None
+        
     if action == "INSERT":
         file_path = STORAGE + f"{table}.csv"
 
@@ -218,19 +308,21 @@ def execute_query(parsed_query, plan):
             reader = list(csv.reader(f))
 
         header = reader[0]
-        values = parsed_query["values"]
 
-        
-        if len(values) != len(header):
-            return f"Error: Expected {len(header)} values, got {len(values)}"
+        # Now values contains multiple rows
+        all_rows = parsed_query["values"]
 
-  
-        if not validate_constraints(table, header, values):
-            return "Error: Constraint violation"
+        for values in all_rows:
 
-        with open(file_path, "a", newline="") as f:
-            writer = csv.writer(f)
-            writer.writerow(values)
+            if len(values) != len(header):
+                return f"Error: Expected {len(header)} values, got {len(values)}"
+
+            if not validate_constraints(table, header, values):
+                return "Error: Constraint violation"
+
+            with open(file_path, "a", newline="") as f:
+                writer = csv.writer(f)
+                writer.writerow(values)
 
         return "Inserted Successfully"
 
@@ -266,11 +358,17 @@ def execute_query(parsed_query, plan):
         return result
 
     if action == "DELETE":
+
         file_path = STORAGE + f"{table}.csv"
+        schema_path = STORAGE + "schema.json"
 
         if not os.path.exists(file_path):
             print("Table not found")
             return None
+
+        # Load schema
+        with open(schema_path, "r") as f:
+            schema = json.load(f)
 
         with open(file_path, "r") as f:
             reader = list(csv.reader(f))
@@ -287,6 +385,47 @@ def execute_query(parsed_query, plan):
 
         col_index = header.index(column)
 
+        # -----------------------------
+        # FOREIGN KEY DELETE CHECK
+        # -----------------------------
+        primary_col = schema[table].get("primary")
+
+        if column == primary_col:
+
+            for other_table, other_schema in schema.items():
+
+                if other_table == table:
+                    continue
+
+                foreign_keys = other_schema.get("foreign_keys", {})
+
+                for fk_col, fk_info in foreign_keys.items():
+
+                    if (
+                        fk_info["ref_table"] == table
+                        and fk_info["ref_column"] == column
+                    ):
+
+                        child_file = STORAGE + f"{other_table}.csv"
+
+                        if os.path.exists(child_file):
+
+                            with open(child_file, "r") as f:
+                                child_reader = list(csv.reader(f))
+
+                            child_header = child_reader[0]
+                            child_rows = child_reader[1:]
+
+                            fk_index = child_header.index(fk_col)
+
+                            for child_row in child_rows:
+                                if child_row[fk_index] == value:
+                                    print("Cannot delete: record is referenced in another table")
+                                    return None
+
+        # -----------------------------
+        # SAFE DELETE
+        # -----------------------------
         new_rows = []
         deleted = False
 
@@ -308,21 +447,47 @@ def execute_query(parsed_query, plan):
 
         return None
     if action == "DROP":
+
         schema_path = STORAGE + "schema.json"
         file_path = STORAGE + f"{table}.csv"
 
-        # Remove from schema
-        if os.path.exists(schema_path):
-            with open(schema_path, "r") as f:
-                schema = json.load(f)
+        if not os.path.exists(schema_path):
+            print("Schema not found")
+            return None
 
-            if table in schema:
-                del schema[table]
+        with open(schema_path, "r") as f:
+            schema = json.load(f)
 
-                with open(schema_path, "w") as f:
-                    json.dump(schema, f, indent=4)
+        if table not in schema:
+            print("Table not found")
+            return None
 
-        # Remove CSV file
+        # ---------------------------------
+        # FOREIGN KEY DROP CHECK
+        # ---------------------------------
+        for other_table, other_schema in schema.items():
+
+            if other_table == table:
+                continue
+
+            foreign_keys = other_schema.get("foreign_keys", {})
+
+            for fk_col, fk_info in foreign_keys.items():
+
+                if fk_info["ref_table"] == table:
+                    print(
+                        f"Cannot remove table: referenced by '{other_table}' table"
+                    )
+                    return None
+
+        # ---------------------------------
+        # SAFE DROP
+        # ---------------------------------
+        del schema[table]
+
+        with open(schema_path, "w") as f:
+            json.dump(schema, f, indent=4)
+
         if os.path.exists(file_path):
             os.remove(file_path)
 
@@ -378,8 +543,8 @@ def execute_query(parsed_query, plan):
                 if not validate_constraints(table, header, new_row):
                     return None
 
-        row[set_index] = set_value
-        updated = True
+                row[set_index] = set_value
+                updated = True
 
         with open(file_path, "w", newline="") as f:
             writer = csv.writer(f)

@@ -1,222 +1,345 @@
 {
-    "students": {
+    "table12": {
         "columns": [
             "id",
-            "name",
-            "age"
-        ],
-        "primary": "id",
-        "indexed": [
-            "age"
-        ]
-    },
-    "product": {
-        "columns": [
-            "id",
-            "name",
-            "age"
-        ],
-        "types": {
-            "id": "int",
-            "name": "str",
-            "age": "int"
-        },
-        "primary": null,
-        "indexed": [
-            "age"
-        ]
-    },
-    "st": {
-        "columns": [
-            "roll_no",
             "name"
         ],
         "types": {
-            "roll_no": "int",
-            "name": "int"
+            "id": {
+                "type": "int"
+            },
+            "name": {
+                "type": "varchar",
+                "size": 1200
+            }
+        },
+        "primary": "id",
+        "unique": [],
+        "not_null": [],
+        "foreign_keys": {},
+        "check": {}
+    },
+    "data": {
+        "columns": [
+            "id_user",
+            "name"
+        ],
+        "types": {
+            "id_user": {
+                "type": "int"
+            },
+            "name": {
+                "type": "varchar",
+                "size": 60
+            }
         },
         "primary": null,
-        "indexed": []
+        "unique": [],
+        "not_null": [],
+        "foreign_keys": {},
+        "check": {},
+        "len": {},
+        "positive": []
     },
-    "dahsndhri": {
+    "data1": {
+        "columns": [
+            "mo"
+        ],
+        "types": {
+            "mo": {
+                "type": "int"
+            }
+        },
+        "primary": null,
+        "unique": [],
+        "not_null": [],
+        "foreign_keys": {},
+        "check": {}
+    },
+    "student_data": {
+        "columns": [
+            "id",
+            "name",
+            "age"
+        ],
+        "types": {
+            "id": {
+                "type": "int"
+            },
+            "name": {
+                "type": "varchar",
+                "size": 50
+            }
+        },
+        "primary": "id",
+        "unique": [],
+        "not_null": [
+            "name"
+        ],
+        "foreign_keys": {},
+        "check": {
+            "age": {
+                "operator": "<",
+                "value": "19"
+            }
+        }
+    },
+    "users": {
+        "columns": [
+            "dob"
+        ],
+        "types": {
+            "dob": {
+                "type": "date"
+            }
+        },
+        "primary": null,
+        "unique": [],
+        "not_null": [],
+        "foreign_keys": {},
+        "check": {}
+    },
+    "events": {
+        "columns": [
+            "event_date"
+        ],
+        "types": {
+            "event_date": {
+                "type": "date"
+            }
+        },
+        "primary": null,
+        "unique": [],
+        "not_null": [],
+        "foreign_keys": {},
+        "check": {}
+    },
+    "salary_table": {
         "columns": [
             "salary"
         ],
         "types": {
-            "salary": "int"
+            "salary": {
+                "type": "float"
+            }
         },
         "primary": null,
-        "indexed": []
+        "unique": [],
+        "not_null": [],
+        "foreign_keys": {},
+        "check": {}
     },
-    "dh": {
+    "userss": {
         "columns": [
+            "num"
+        ],
+        "types": {
+            "num": {
+                "type": "int"
+            }
+        },
+        "primary": null,
+        "unique": [],
+        "not_null": [],
+        "foreign_keys": {},
+        "check": {},
+        "positive": []
+    },
+    "table": {
+        "columns": [
+            "id",
+            "name",
+            "MObile"
+        ],
+        "types": {
+            "id": {
+                "type": "int"
+            },
+            "name": {
+                "type": "varchar",
+                "size": 100
+            },
+            "MObile": {
+                "type": "int"
+            }
+        },
+        "primary": "id",
+        "unique": [],
+        "not_null": [
             "name"
         ],
-        "types": {
-            "name": "int"
-        },
-        "primary": null,
-        "indexed": []
-    },
-    "bh": {
-        "columns": [
-            "namw"
-        ],
-        "types": {
-            "namw": "int"
-        },
-        "primary": null,
-        "indexed": []
-    },
-    "sjba": {
-        "columns": [
-            "name"
-        ],
-        "types": {
-            "name": "str"
-        },
-        "primary": null,
-        "indexed": []
-    },
-    "crop_cleaned": {
-        "columns": [
-            "State",
-            "Crop",
-            "Month",
-            "Prices 2023",
-            "Prices 2024",
-            "% Change(Over Previous Year)"
-        ],
-        "types": {},
-        "primary": null,
-        "indexed": []
+        "foreign_keys": {},
+        "check": {},
+        "len": {},
+        "positive": []
     },
     "table1": {
         "columns": [
+            "id",
+            "name",
+            "MObile"
+        ],
+        "types": {
+            "id": {
+                "type": "int"
+            },
+            "name": {
+                "type": "varchar",
+                "size": 50
+            },
+            "MObile": {
+                "type": "int"
+            }
+        },
+        "primary": "id",
+        "unique": [],
+        "not_null": [
             "name"
         ],
-        "types": {
-            "name": "str"
-        },
-        "primary": null,
-        "indexed": []
+        "foreign_keys": {},
+        "check": {},
+        "len": {},
+        "positive": []
     },
-    "crop1": {
+    "data2": {
         "columns": [
-            "int",
-            "str"
-        ],
-        "types": {
-            "int": "price",
-            "str": "name"
-        },
-        "primary": null,
-        "indexed": []
-    },
-    "DATA": {
-        "columns": [
+            "id_user",
             "name",
-            "PRN"
+            "subject_no"
         ],
         "types": {
-            "name": "str",
-            "PRN": "int"
+            "id_user": {
+                "type": "int"
+            },
+            "name": {
+                "type": "varchar",
+                "size": 60
+            },
+            "subject_no": {
+                "type": "int"
+            }
         },
         "primary": null,
-        "indexed": []
+        "unique": [],
+        "not_null": [],
+        "foreign_keys": {},
+        "check": {},
+        "len": {},
+        "positive": [
+            "subject_no"
+        ]
     },
-    "departments": {
+    "st": {
         "columns": [
             "id"
         ],
         "types": {
-            "id": "int"
+            "id": {
+                "type": "int"
+            }
+        },
+        "primary": null,
+        "unique": [],
+        "not_null": [],
+        "foreign_keys": {},
+        "check": {},
+        "len": {},
+        "positive": [
+            "id"
+        ]
+    },
+    "st1": {
+        "columns": [
+            "id",
+            "name"
+        ],
+        "types": {
+            "id": {
+                "type": "float"
+            },
+            "name": {
+                "type": "varchar",
+                "size": 50
+            }
+        },
+        "primary": "id",
+        "unique": [],
+        "not_null": [
+            "name"
+        ],
+        "foreign_keys": {},
+        "check": {},
+        "len": {},
+        "positive": []
+    },
+    "s1": {
+        "columns": [
+            "id",
+            "name"
+        ],
+        "types": {
+            "id": {
+                "type": "float"
+            },
+            "name": {
+                "type": "varchar",
+                "size": 50
+            }
         },
         "primary": "id",
         "unique": [],
         "not_null": [],
-        "foreign_keys": {}
+        "foreign_keys": {},
+        "check": {},
+        "len": {},
+        "positive": []
     },
-    "table3": {
+    "s2": {
         "columns": [
-            "name"
+            "available"
         ],
         "types": {
-            "name": {
-                "type": "int"
+            "available": {
+                "type": "boolean"
             }
         },
         "primary": null,
         "unique": [],
-        "not_null": [],
-        "foreign_keys": {}
-    },
-    "table7": {
-        "columns": [
-            "name"
+        "not_null": [
+            "available"
         ],
-        "types": {
-            "name": {
-                "type": "int"
-            }
-        },
-        "primary": "name",
-        "unique": [],
-        "not_null": [],
-        "foreign_keys": {}
+        "foreign_keys": {},
+        "check": {},
+        "len": {},
+        "positive": []
     },
-    "table5": {
+    "taabble": {
         "columns": [
             "name",
-            "id"
+            "mobile"
         ],
         "types": {
             "name": {
                 "type": "varchar",
                 "size": 50
             },
-            "id": {
+            "mobile": {
                 "type": "int"
             }
         },
-        "primary": "name",
+        "primary": null,
         "unique": [],
-        "not_null": [
-            "id"
-        ],
-        "foreign_keys": {}
+        "not_null": [],
+        "foreign_keys": {},
+        "check": {},
+        "len": {},
+        "positive": []
     },
-    "data1": {
+    "database": {
         "columns": [
-            "name",
-            "id"
-        ],
-        "types": {
-            "name": {
-                "type": "varchar",
-                "size": 100
-            },
-            "id": {
-                "type": "int"
-            }
-        },
-        "primary": "name",
-        "unique": [],
-        "not_null": [
-            "id"
-        ],
-        "foreign_keys": {}
-    },
-    "table10": {
-        "columns": [
-            "name",
             "age"
         ],
         "types": {
-            "name": {
-                "type": "varchar",
-                "size": 12
-            },
             "age": {
                 "type": "int"
             }
@@ -224,89 +347,118 @@
         "primary": null,
         "unique": [],
         "not_null": [],
-        "foreign_keys": {}
+        "foreign_keys": {},
+        "check": {},
+        "len": {},
+        "positive": []
     },
-    "name1": {
+    "database1": {
         "columns": [
-            "PRN",
-            "name"
+            "age"
         ],
         "types": {
-            "PRN": "int",
-            "name": "str"
-        },
-        "primary": null,
-        "indexed": []
-    },
-    "club": {
-        "columns": [
-            "club_id",
-            "club_name"
-        ],
-        "types": {
-            "club_id": {
+            "age": {
                 "type": "int"
-            },
-            "club_name": {
-                "type": "varchar",
-                "size": 50
             }
         },
-        "primary": "club_id",
+        "primary": null,
         "unique": [],
         "not_null": [],
-        "foreign_keys": {}
+        "foreign_keys": {},
+        "check": {},
+        "len": {},
+        "positive": []
+    },
+    "DATABASE": {
+        "columns": [
+            "PRN",
+            "NAME",
+            "dep_id",
+            "marks"
+        ],
+        "types": {
+            "PRN": {
+                "type": "int"
+            },
+            "NAME": {
+                "type": "varchar",
+                "size": 50
+            },
+            "dep_id": {
+                "type": "int"
+            },
+            "marks": {
+                "type": "int"
+            }
+        },
+        "primary": "PRN",
+        "unique": [],
+        "not_null": [
+            "NAME",
+            "dep_id",
+            "marks"
+        ],
+        "foreign_keys": {},
+        "check": {},
+        "len": {},
+        "positive": []
+    },
+    "course": {
+        "columns": [
+            "course_id",
+            "course_name",
+            "student_id"
+        ],
+        "types": {
+            "course_id": {
+                "type": "int"
+            },
+            "course_name": {
+                "type": "varchar",
+                "size": 50
+            },
+            "student_id": {
+                "type": "int"
+            }
+        },
+        "primary": "course_id",
+        "unique": [],
+        "not_null": [
+            "course_name"
+        ],
+        "foreign_keys": {
+            "student_id": {
+                "ref_table": "student",
+                "ref_column": "id"
+            }
+        },
+        "check": {},
+        "len": {},
+        "positive": []
     },
     "student": {
         "columns": [
-            "student_id",
-            "name"
-        ],
-        "types": {
-            "student_id": {
-                "type": "int"
-            },
-            "name": {
-                "type": "varchar",
-                "size": 50
-            }
-        },
-        "primary": "student_id",
-        "unique": [],
-        "not_null": [],
-        "foreign_keys": {}
-    },
-    "TABLE": {
-        "columns": [
-            "club_id",
-            "club_name"
-        ],
-        "types": {
-            "club_id": {
-                "type": "int"
-            },
-            "club_name": {
-                "type": "varchar",
-                "size": 50
-            }
-        },
-        "primary": "club_id",
-        "unique": [],
-        "not_null": [],
-        "foreign_keys": {}
-    },
-    "info": {
-        "columns": [
-            "name"
+            "name",
+            "surname"
         ],
         "types": {
             "name": {
-                "type": "int"
+                "type": "varchar",
+                "size": 40
+            },
+            "surname": {
+                "type": "varchar",
+                "size": 10
             }
         },
         "primary": null,
         "unique": [],
-        "not_null": [],
-        "foreign_keys": {}
+        "not_null": [
+            "surname"
+        ],
+        "foreign_keys": {},
+        "check": {},
+        "len": {},
+        "positive": []
     }
 }

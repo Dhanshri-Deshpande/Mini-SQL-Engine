@@ -7,10 +7,7 @@ def parse_query(tokens):
     if command == "MAKE":
         table = tokens[1]
 
-        # Join everything after table name
         full_query = " ".join(tokens[2:])
-
-        # Extract content inside parentheses
         if "(" not in full_query or ")" not in full_query:
             print("Invalid CREATE syntax")
             return None
@@ -27,16 +24,39 @@ def parse_query(tokens):
         unique = []
         not_null = []
         foreign_keys = {}
-
+        check_constraints = {}
+        len_constraints = {}
+        positive = []
         for col_def in columns_raw:
 
             col_def = col_def.strip()
-
             if not col_def:
                 continue
 
             parts = col_def.split()
 
+            # FIRST check FOREIGN KEY
+            if col_def.upper().startswith("FOREIGN KEY"):
+
+                try:
+                    fk_col = col_def.split("(")[1].split(")")[0].strip()
+
+                    ref_table = col_def.split("REFERENCES")[1].split("(")[0].strip().lower()
+
+                    ref_column = col_def.split("REFERENCES")[1].split("(")[1].split(")")[0].strip()
+
+                    foreign_keys[fk_col] = {
+                        "ref_table": ref_table,
+                        "ref_column": ref_column
+                    }
+
+                    continue
+
+                except:
+                    print("Invalid FOREIGN KEY syntax")
+                    return None
+
+            # THEN normal column parsing
             if len(parts) < 2:
                 print("Invalid column definition:", col_def)
                 return None
@@ -45,28 +65,43 @@ def parse_query(tokens):
             col_type_raw = parts[1].lower()
 
             columns.append(col_name)
-
+        
             # --------------------
             # DATA TYPES
             # --------------------
 
             if col_type_raw == "int":
                 types[col_name] = {"type": "int"}
+            elif col_type_raw in ["float", "double"]:
+                types[col_name] = {"type": col_type_raw}
 
+            elif col_type_raw == "boolean":
+                types[col_name] = {"type": "boolean"}
 
+            elif col_type_raw == "date":
+                types[col_name] = {"type": "date"}
 
-            
+            elif col_type_raw == "time":
+                types[col_name] = {"type": "time"}
+
+            elif col_type_raw == "datetime":
+                types[col_name] = {"type": "datetime"}
             elif col_type_raw == "varchar":
-                try:
-                    # Expect format: varchar ( 50 )
-                    if len(parts) >= 5 and parts[2] == "(" and parts[4] == ")":
-                        size = int(parts[3])
-                        types[col_name] = {"type": "varchar", "size": size}
-                    else:
-                        print("Invalid varchar syntax")
-                        return None
-                except:
+                if len(parts) >= 5 and parts[2] == "(" and parts[4] == ")":
+                    size = int(parts[3])
+                    types[col_name] = {"type": "varchar", "size": size}
+                else:
                     print("Invalid varchar syntax")
+                    return None
+            elif col_type_raw == "char":
+                if len(parts) >= 5 and parts[2] == "(" and parts[4] == ")":
+                    size = int(parts[3])
+                    types[col_name] = {
+                        "type": "char",
+                        "size": size
+                    }
+                else:
+                    print("Invalid char syntax")
                     return None
             else:
                 print(f"Unsupported data type: {col_type_raw}")
@@ -76,7 +111,7 @@ def parse_query(tokens):
             # CONSTRAINTS
             # --------------------
 
-            if "PRIMARY" in parts:
+            if "PRIMARY" in parts and "KEY" in parts:
                 primary = col_name
 
             if "UNIQUE" in parts:
@@ -84,6 +119,65 @@ def parse_query(tokens):
 
             if "NOT" in parts and "NULL" in parts:
                 not_null.append(col_name)
+            
+            # POSITIVE constraint
+            if "POSITIVE" in parts:
+                positive.append(col_name)
+            # --------------------
+            # LEN CONSTRAINT
+            # --------------------
+            for i in range(len(parts)):
+
+                # Case 1 → LEN(10)
+                if parts[i].upper().startswith("LEN(") and parts[i].endswith(")"):
+                    try:
+                        size = int(parts[i][4:-1])
+                        len_constraints[col_name] = size
+                    except:
+                        print("Invalid LEN syntax")
+                        return None
+
+                # Case 2 → LEN ( 10 )
+                elif parts[i].upper() == "LEN":
+                    try:
+                        if i + 3 < len(parts):
+                            if parts[i+1] == "(" and parts[i+3] == ")":
+                                size = int(parts[i+2])
+                                len_constraints[col_name] = size
+                    except:
+                        print("Invalid LEN syntax")
+                        return None
+            if "CHECK" in parts:
+
+                check_str = col_def[col_def.find("CHECK"):]
+
+                try:
+                    condition = check_str.split("(")[1].split(")")[0]
+
+                    if ">=" in condition:
+                        col, val = condition.split(">=")
+                        operator = ">="
+
+                    elif "<=" in condition:
+                        col, val = condition.split("<=")
+                        operator = "<="
+
+                    elif ">" in condition:
+                        col, val = condition.split(">")
+                        operator = ">"
+
+                    elif "<" in condition:
+                        col, val = condition.split("<")
+                        operator = "<"
+
+                    check_constraints[col_name] = {
+                        "operator": operator,
+                        "value": val.strip()
+                    }
+
+                except:
+                    print("Invalid CHECK syntax")
+                    return None
 
         return {
             "action": "CREATE",
@@ -93,9 +187,12 @@ def parse_query(tokens):
             "primary": primary,
             "unique": unique,
             "not_null": not_null,
-            "foreign_keys": foreign_keys
+            "foreign_keys": foreign_keys,
+            "check": check_constraints,
+            "len": len_constraints,
+            "positive": positive
         }
-        
+            
     elif command == "REMOVE":
         return {
             "action": "DROP",
@@ -104,12 +201,42 @@ def parse_query(tokens):
     
     elif command == "ADD":
         table = tokens[1]
-        values = " ".join(tokens[3:-1])
-        values = values.split(",")
+
+        full_query = " ".join(tokens[2:]).strip()
+
+        # Remove ending semicolon
+        if full_query.endswith(";"):
+            full_query = full_query[:-1]
+
+        all_rows = []
+        current = ""
+        bracket_count = 0
+
+        for ch in full_query:
+            if ch == "(":
+                bracket_count += 1
+
+            if ch == ")":
+                bracket_count -= 1
+
+            current += ch
+
+            # One full row completed
+            if bracket_count == 0 and current.strip():
+                row = current.strip().strip(",")
+
+                row = row.replace("(", "").replace(")", "").strip()
+
+                if row:
+                    values = [v.strip() for v in row.split(",")]
+                    all_rows.append(values)
+
+                current = ""
+
         return {
             "action": "INSERT",
             "table": table,
-            "values": [v.strip() for v in values]
+            "values": all_rows
         }
     elif command == "TRUNCATE":
 
@@ -148,6 +275,10 @@ def parse_query(tokens):
         # ------------------ ADD COLUMN ------------------
         if tokens[2].upper() == "ADD":
 
+            if len(tokens) < 5:
+                print("Invalid ALTER ADD syntax")
+                return None
+
             col_name = tokens[3]
 
             # INT
@@ -174,24 +305,61 @@ def parse_query(tokens):
                     return None
 
             else:
-                print("Unsupported datatype in ALTER")
+                print("Unsupported datatype in ALTER ADD")
                 return None
 
         # ------------------ DROP COLUMN ------------------
         elif tokens[2].upper() == "DROP":
 
-            col_name = tokens[3]
+            if len(tokens) < 4:
+                print("Invalid ALTER DROP syntax")
+                return None
 
             return {
                 "action": "ALTER_DROP",
                 "table": table,
-                "column": col_name
+                "column": tokens[3]
             }
+
+        # ------------------ MODIFY COLUMN ------------------
+        elif tokens[2].upper() == "MODIFY":
+
+            if len(tokens) < 5:
+                print("Invalid ALTER MODIFY syntax")
+                return None
+
+            col_name = tokens[3]
+
+            # INT
+            if tokens[4].lower() == "int":
+                return {
+                    "action": "ALTER_MODIFY",
+                    "table": table,
+                    "column": col_name,
+                    "type": {"type": "int"}
+                }
+
+            # VARCHAR
+            elif tokens[4].lower() == "varchar":
+                if len(tokens) >= 8 and tokens[5] == "(" and tokens[7] == ")":
+                    size = int(tokens[6])
+                    return {
+                        "action": "ALTER_MODIFY",
+                        "table": table,
+                        "column": col_name,
+                        "type": {"type": "varchar", "size": size}
+                    }
+                else:
+                    print("Invalid varchar syntax")
+                    return None
+
+            else:
+                print("Unsupported datatype in ALTER MODIFY")
+                return None
 
         else:
             print("Invalid ALTER operation")
             return None
-     
     
     elif command == "SHOW":
 

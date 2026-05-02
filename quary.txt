@@ -30,3 +30,65 @@ CREATE TABLE student (
     FOREIGN KEY (club_id)
     REFERENCES club(club_id)
 );
+
+==========================================
+DDL
+MAKE student (id int PRIMARY KEY, name varchar(50) NOT NULL);
+MAKE student2 (age int CHECK (age < 19));
+REMOVE table_name;
+ALTER student ADD age int;
+ALTER student DROP age;
+ALTER student MODIFY name varchar ( 100 );
+TRUNCATE table_name;
+RENAME student TO student_data;
+========================================
+DML
+ADD student (1, John);
+SHOW table_name;
+SHOW student WHERE id=1;
+ERASE student WHERE id=1;
+CHANGE student SET name=Rahul WHERE id=1;
+
+=====================
+contarint
+PRIMARY KEY
+NOT NULL
+UNIQUE
+CHECK
+LEN
+POSITIVE 
+======================
+DATATYPES
+INT 
+FLOAT
+VARCHAR(n)
+DATE
+TIME
+DATETIME
+TIMESTAMP
+BOOLEAN
+DOUBLE
+
+
+
+| Query           | Example                                    |
+| --------------- | ------------------------------------------ |
+| MAKE            | `MAKE student (id int PRIMARY KEY)`        |
+| REMOVE          | `REMOVE student`                           |
+| ALTER ADD       | `ALTER student ADD age int`                |
+| ALTER DROP      | `ALTER student DROP age`                   |
+| ALTER MODIFY    | `ALTER student MODIFY name varchar (100)`  |
+| TRUNCATE        | `TRUNCATE student`                         |
+| RENAME          | `RENAME student TO student_data`           |
+| ADD (INSERT)    | `ADD student (1, John)`                    |
+| SHOW (SELECT)   | `SHOW student`                             |
+| SHOW WHERE      | `SHOW student WHERE id=1`                  |
+| ERASE (DELETE)  | `ERASE student WHERE id=1`                 |
+| CHANGE (UPDATE) | `CHANGE student SET name=Rahul WHERE id=1` |
+
+
+
+
+problem len not work as contarint
+len not print in schema.json
+ALTER 
