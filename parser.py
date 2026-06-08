@@ -211,7 +211,9 @@ def parse_query(tokens):
         all_rows = []
         current = ""
         bracket_count = 0
-
+        
+# ADD student(1,"ram"), (2,"Sham");
+        
         for ch in full_query:
             if ch == "(":
                 bracket_count += 1
@@ -245,7 +247,7 @@ def parse_query(tokens):
             return None
 
         table = tokens[1]
-
+#TRUNCATE table_name
         # remove trailing semicolon if present
         if table.endswith(";"):
             table = table[:-1]
@@ -258,7 +260,7 @@ def parse_query(tokens):
         if len(tokens) < 4 or tokens[2].upper() != "TO":
             print("Invalid RENAME syntax. Use: RENAME old TO new")
             return None
-
+#RENAME "student" TO "college"
         return {
             "action": "RENAME",
             "old_name": tokens[1],
@@ -269,16 +271,16 @@ def parse_query(tokens):
         if len(tokens) < 4:
             print("Invalid ALTER syntax")
             return None
-
+            
         table = tokens[1]
 
         # ------------------ ADD COLUMN ------------------
         if tokens[2].upper() == "ADD":
 
             if len(tokens) < 5:
+                #ALTER student ADD age int
                 print("Invalid ALTER ADD syntax")
                 return None
-
             col_name = tokens[3]
 
             # INT
@@ -314,7 +316,7 @@ def parse_query(tokens):
             if len(tokens) < 4:
                 print("Invalid ALTER DROP syntax")
                 return None
-
+#ALTER student DROP age 
             return {
                 "action": "ALTER_DROP",
                 "table": table,
@@ -327,7 +329,7 @@ def parse_query(tokens):
             if len(tokens) < 5:
                 print("Invalid ALTER MODIFY syntax")
                 return None
-
+#ALTER student MODIFY age varchar
             col_name = tokens[3]
 
             # INT
@@ -364,22 +366,22 @@ def parse_query(tokens):
     elif command == "SHOW":
 
         # SHOW table;
-        if len(tokens) == 2:
+        if len(tokens) == 2:    #SHOW student
             return {
                 "action": "SELECT",
                 "table": tokens[1],
                 "condition": None
             }
 
-        # SHOW * FROM table;
-        if tokens[1] == "*":
+        # SHOW * FROM table;    #SHOW * FROM student
+        if tokens[1] == "*":   
             table = tokens[3]
         else:
             table = tokens[1]
 
-        if "WHERE" in tokens:
+        if "WHERE" in tokens:   #SHOW student WHERE id=1
             condition = tokens[tokens.index("WHERE") + 1]
-            column, value = condition.split("=")
+            column, value = condition.split("=")   #column = "id"  value = "1"
             return {
                 "action": "SELECT",
                 "table": table,
@@ -394,7 +396,7 @@ def parse_query(tokens):
 
     elif command == "ERASE":
         table = tokens[1]
-        condition = tokens[tokens.index("WHERE") + 1]
+        condition = tokens[tokens.index("WHERE") + 1]  #ERASE student WHERE id=1
         column, value = condition.split("=")
         return {
             "action": "DELETE",
@@ -407,7 +409,9 @@ def parse_query(tokens):
 
         set_index = tokens.index("SET")
         where_index = tokens.index("WHERE")
-
+        
+#CHANGE student SET name=Rahul WHERE id=1
+        
         set_part = tokens[set_index + 1]
         where_part = tokens[where_index + 1]
 
