@@ -1,5 +1,6 @@
 import os
 import json
+import csv
 
 STORAGE = "storage/"
 def load_schema_from_csv(table):

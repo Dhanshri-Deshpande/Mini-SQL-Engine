@@ -106,7 +106,7 @@ def validate_constraints(table, header, row_values):
                 print(f"{col} must be numeric for POSITIVE constraint")
                 return False
         # -------------------------
-        # 🔹 LEN CONSTRAINT
+        #  LEN CONSTRAINT
         # -------------------------
 
         if col in len_constraints:
@@ -156,8 +156,7 @@ def validate_constraints(table, header, row_values):
 
         if col == primary:
             for existing_row in existing_rows:
-                if existing_row == row_values:
-                    continue
+               
                 if existing_row[i] == value:
                     print("Primary key violation")
                     return False
@@ -236,7 +235,7 @@ def execute_query(parsed_query, plan):
             writer = csv.writer(f)
             writer.writerow(parsed_query["columns"])
 
-        print(f"Table '{table}' created with constraints.")
+        print(f"Table '{table}' created.")
         return None
 
     if action == "ALTER_MODIFY":

@@ -58,31 +58,48 @@
     },
     "student_data": {
         "columns": [
-            "id",
+            "PRN",
             "name",
+            "surname",
+            "mobile_no",
             "age"
         ],
         "types": {
-            "id": {
+            "PRN": {
                 "type": "int"
             },
             "name": {
                 "type": "varchar",
                 "size": 50
+            },
+            "surname": {
+                "type": "varchar",
+                "size": 30
+            },
+            "mobile_no": {
+                "type": "int"
+            },
+            "age": {
+                "type": "int"
             }
         },
-        "primary": "id",
+        "primary": "PRN",
         "unique": [],
         "not_null": [
-            "name"
+            "name",
+            "surname"
         ],
         "foreign_keys": {},
         "check": {
             "age": {
-                "operator": "<",
-                "value": "19"
+                "operator": ">",
+                "value": "18"
             }
-        }
+        },
+        "len": {
+            "mobile_no": 10
+        },
+        "positive": []
     },
     "users": {
         "columns": [
@@ -274,16 +291,11 @@
     },
     "s1": {
         "columns": [
-            "id",
-            "name"
+            "id"
         ],
         "types": {
             "id": {
                 "type": "float"
-            },
-            "name": {
-                "type": "varchar",
-                "size": 50
             }
         },
         "primary": "id",
@@ -438,24 +450,183 @@
     },
     "student": {
         "columns": [
+            "PRN",
+            "name",
+            "surname",
+            "mobile_no",
+            "age",
+            "salary",
+            "DATE_login"
+        ],
+        "types": {
+            "PRN": {
+                "type": "int"
+            },
+            "name": {
+                "type": "varchar",
+                "size": 50
+            },
+            "surname": {
+                "type": "varchar",
+                "size": 30
+            },
+            "mobile_no": {
+                "type": "int"
+            },
+            "age": {
+                "type": "int"
+            },
+            "salary": {
+                "type": "int"
+            },
+            "DATE_login": {
+                "type": "date"
+            }
+        },
+        "primary": "PRN",
+        "unique": [],
+        "not_null": [
             "name",
             "surname"
+        ],
+        "foreign_keys": {},
+        "check": {
+            "age": {
+                "operator": ">",
+                "value": "18"
+            }
+        },
+        "len": {
+            "mobile_no": 10
+        },
+        "positive": [
+            "salary"
+        ]
+    },
+    "grade": {
+        "columns": [
+            "course_id",
+            "MARKS",
+            "PRN"
+        ],
+        "types": {
+            "course_id": {
+                "type": "int"
+            },
+            "MARKS": {
+                "type": "float"
+            },
+            "PRN": {
+                "type": "int"
+            }
+        },
+        "primary": "course_id",
+        "unique": [],
+        "not_null": [
+            "MARKS"
+        ],
+        "foreign_keys": {
+            "PRN": {
+                "ref_table": "student",
+                "ref_column": "RPN"
+            }
+        },
+        "check": {},
+        "len": {},
+        "positive": []
+    },
+    "dep": {
+        "columns": [
+            "dept_id",
+            "id"
+        ],
+        "types": {
+            "dept_id": {
+                "type": "int"
+            },
+            "id": {
+                "type": "int"
+            }
+        },
+        "primary": "dept_id",
+        "unique": [],
+        "not_null": [],
+        "foreign_keys": {},
+        "check": {},
+        "len": {},
+        "positive": []
+    },
+    "details": {
+        "columns": [
+            "name",
+            "surname",
+            "age",
+            "mo_no",
+            "salary",
+            "id"
         ],
         "types": {
             "name": {
                 "type": "varchar",
-                "size": 40
+                "size": 50
             },
             "surname": {
                 "type": "varchar",
-                "size": 10
+                "size": 60
+            },
+            "age": {
+                "type": "int"
+            },
+            "mo_no": {
+                "type": "int"
+            },
+            "salary": {
+                "type": "int"
+            },
+            "id": {
+                "type": "int"
+            }
+        },
+        "primary": "id",
+        "unique": [],
+        "not_null": [
+            "name",
+            "surname"
+        ],
+        "foreign_keys": {},
+        "check": {
+            "age": {
+                "operator": ">",
+                "value": "18"
+            }
+        },
+        "len": {
+            "mo_no": 10
+        },
+        "positive": [
+            "salary"
+        ]
+    },
+    "name": {
+        "columns": [
+            "login",
+            "login_1",
+            "login_2"
+        ],
+        "types": {
+            "login": {
+                "type": "date"
+            },
+            "login_1": {
+                "type": "datetime"
+            },
+            "login_2": {
+                "type": "time"
             }
         },
         "primary": null,
         "unique": [],
-        "not_null": [
-            "surname"
-        ],
+        "not_null": [],
         "foreign_keys": {},
         "check": {},
         "len": {},

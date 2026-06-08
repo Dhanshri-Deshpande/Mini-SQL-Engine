@@ -89,6 +89,3 @@ DOUBLE
 
 
 
-problem len not work as contarint
-len not print in schema.json
-ALTER 
